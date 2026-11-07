@@ -1,19 +1,184 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f3eb"><meta name="description" content="하루를 시작하는 응원 한 줄과 작은 그림 한 장."><title>하루 한 장, 나에게</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f6f3eb;color:#435b47;font-family:'Malgun Gothic',system-ui,sans-serif}header{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:29px 28px;border-bottom:1px solid #e4e7da}.brand{font-size:14px;font-weight:600}.brand span{color:#d5ad5d;margin-right:9px}header small{color:#a1aa96;font:10px Georgia,serif;letter-spacing:.15em}main{max-width:1100px;margin:0 auto;padding:48px 28px 30px}.eyebrow{font-size:10px;letter-spacing:.18em;color:#8e9e83;margin:0 0 18px}.hero{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center}.copy{padding:15px 0}h1{font-weight:500;font-size:clamp(28px,4vw,42px);letter-spacing:-.055em;line-height:1.7;word-break:keep-all;margin:18px 0 23px}.date{font-size:12px;color:#91a084}.greeting{font-size:13px;color:#8e9a84;line-height:1.9;word-break:keep-all;margin:0 0 26px}.image-wrap{padding:11px;background:#fffdf6;border:1px solid #e5e6d9;border-radius:21px;box-shadow:0 22px 65px #69735412}.hero img{width:100%;height:auto;display:block;border-radius:12px}.save{display:inline-block;border:1px solid #b9c8ad;color:#627d5b;text-decoration:none;border-radius:11px;padding:11px 18px;font-size:11px}.archive{margin-top:55px;padding-top:26px;border-top:1px solid #e1e4d7}.archive-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.archive h2{font-size:14px;font-weight:500;margin:0}.archive-top small{color:#98a58d;font-size:11px}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:16px}.past{background:#fffcf4;border:1px solid #e5e6db;border-radius:15px;padding:9px;cursor:pointer;text-align:left;color:inherit;font:inherit}.past img{display:block;width:100%;border-radius:8px}.past time{font-size:10px;color:#95a287;display:block;margin:13px 5px 8px}.past p{font-size:11px;line-height:1.8;margin:0 5px 7px;word-break:keep-all}.past[aria-pressed=true]{border-color:#9fb78e}.empty{text-align:center;padding:75px 10px;color:#8e9a84}.hidden{display:none!important}footer{font-size:10px;color:#a5ac9a;text-align:center;line-height:1.9;padding:30px 20px 40px}button:focus-visible,a:focus-visible{outline:3px solid #b8ce9c;outline-offset:4px}@media(max-width:700px){header{padding:22px}header small{font-size:8px}main{padding:30px 20px}.hero{display:flex;flex-direction:column;gap:18px}.copy{width:100%;padding:0}h1{font-size:28px;margin:11px 0 15px}.image-wrap{width:100%}.archive{margin-top:36px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-</style></head><body><header><div class="brand"><span>✷</span>하루 한 장, 나에게</div><small>A LITTLE LIGHT, EVERY DAY</small></header><main><section class="hero" id="hero"><div class="copy"><p class="eyebrow" id="label">오늘, 나에게 건네는 한 줄</p><time class="date" id="date"></time><h1 id="message"></h1><p class="greeting" id="greeting"></p><a class="save" id="save" download>그림 한 장 간직하기 ↗</a></div><div class="image-wrap"><img id="picture" alt="응원 한 줄이 담긴 밝은 그림책 삽화" width="1254" height="1254"></div></section><section class="empty hidden" id="empty">새로운 하루의 응원을 준비하고 있어요.</section><section class="archive" id="archive"><div class="archive-top"><h2>차곡차곡 모인 마음</h2><small id="count"></small></div><div class="cards" id="cards"></div></section></main><footer>짧은 한마디와 작은 그림이, 오늘의 곁에.<br>하루 한 장, 나에게</footer><script>
-const CARDS=[
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f3eb">
+  <meta name="description" content="오늘의 응원 한 장, 그리고 하루하루 쌓이는 작은 갤러리.">
+  <title>하루 한 장, 나에게</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f6f3eb; color: #344e40; font-family: 'Malgun Gothic', system-ui, sans-serif; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    header { max-width: 1160px; margin: auto; padding: 28px 28px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #dfe3d7; }
+    .brand { font-size: 14px; font-weight: 700; }
+    .brand span { margin-right: 9px; color: #b9873d; }
+    header small, .eyebrow { letter-spacing: .16em; font-size: 10px; color: #6e806d; }
+    main { max-width: 1160px; margin: auto; padding: 48px 28px 0; }
+    .hero { background: #fffdf7; border: 1px solid #e0e5d7; border-radius: 28px; padding: 38px; box-shadow: 0 16px 60px #53684c09; }
+    .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+    .eyebrow { margin: 0; }
+    .date { font-size: 12px; color: #65775f; }
+    .hero-content { display: grid; grid-template-columns: .85fr 1.15fr; align-items: center; gap: 36px; }
+    h1 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.65; letter-spacing: -.05em; font-weight: 500; margin: 0 0 24px; word-break: keep-all; }
+    .greeting { color: #697966; font-size: 13px; line-height: 1.9; word-break: keep-all; margin: 0 0 28px; }
+    .image-wrap { padding: 8px; background: #f4f0e5; border-radius: 17px; }
+    .hero img { width: 100%; height: auto; display: block; border-radius: 11px; }
+    .save { display: inline-block; padding: 12px 18px; border: 1px solid #a7b79c; border-radius: 10px; color: #3c5d40; text-decoration: none; font-size: 12px; }
+    .archive { margin-top: 64px; }
+    .archive-top { display: flex; align-items: end; justify-content: space-between; gap: 16px; border-bottom: 1px solid #d8dfcf; padding-bottom: 24px; }
+    h2 { font-size: 25px; letter-spacing: -.04em; font-weight: 500; margin: 9px 0; }
+    .archive-intro { color: #6c7c66; font-size: 13px; line-height: 1.8; margin: 0; }
+    .total { white-space: nowrap; font-size: 12px; color: #65785d; padding-bottom: 4px; }
+    .month { padding: 28px 0 12px; }
+    .month h3 { font-size: 13px; font-weight: 500; margin: 0 0 18px; color: #617359; }
+    .cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+    .past { min-width: 0; padding: 8px 8px 13px; border: 1px solid #e0e4d7; background: #fffdf8; border-radius: 3px; text-align: left; color: inherit; font: inherit; cursor: pointer; box-shadow: 0 5px 15px #4e66470a; transition: transform .2s, box-shadow .2s; }
+    .past:hover { transform: translateY(-4px); box-shadow: 0 10px 20px #4e664714; }
+    .past img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; background: #f4f0e5; }
+    .past time { display: block; margin: 12px 4px 7px; font-size: 10px; letter-spacing: .04em; color: #6d7d66; }
+    .past p { margin: 0 4px; font-size: 11px; line-height: 1.8; word-break: keep-all; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .archive-empty, .empty { padding: 40px 0; line-height: 1.9; color: #6b7b65; font-size: 13px; }
+    .empty { text-align: center; padding: 80px 20px; }
+    .hidden { display: none !important; }
+    footer { padding: 52px 20px 36px; text-align: center; color: #75836c; font-size: 11px; line-height: 1.9; }
+    dialog { max-width: min(660px, calc(100% - 28px)); width: 660px; max-height: calc(100dvh - 36px); border: 1px solid #e0e5d7; border-radius: 20px; padding: 22px; background: #fffdf7; color: #344e40; }
+    dialog::backdrop { background: #213a2b9c; }
+    .dialog-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .close { border: 1px solid #cbd4bf; background: transparent; padding: 8px 12px; border-radius: 9px; color: inherit; font: inherit; font-size: 12px; cursor: pointer; }
+    dialog img { width: 100%; display: block; border-radius: 10px; }
+    dialog h2 { font-size: 22px; line-height: 1.8; word-break: keep-all; margin: 22px 0; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #769363; outline-offset: 4px; }
+    @media (max-width: 900px) { .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } .hero { padding: 28px; } .hero-content { gap: 24px; } }
+    @media (max-width: 650px) {
+      header { padding: 23px 20px; } header small { font-size: 8px; }
+      main { padding: 26px 16px 0; } .hero { padding: 22px 18px; border-radius: 20px; }
+      .hero-top { align-items: start; margin-bottom: 22px; } .eyebrow { font-size: 9px; } .date { font-size: 11px; }
+      .hero-content { grid-template-columns: 1fr; gap: 26px; } h1 { font-size: 32px; margin-bottom: 17px; }
+      .greeting { margin-bottom: 20px; } .archive { margin-top: 43px; } h2 { font-size: 23px; }
+      .archive-top { align-items: start; } .archive-intro { font-size: 12px; } .total { margin-top: 30px; font-size: 11px; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      dialog { padding: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .past { transition: none; } }
+  </style>
+</head>
+<body>
+  <header><div class="brand"><span>✷</span>하루 한 장, 나에게</div><small>A LITTLE LIGHT, EVERY DAY</small></header>
+  <main>
+    <section class="hero" id="hero" aria-labelledby="message">
+      <div class="hero-top"><p class="eyebrow" id="label">오늘의 응원 한 장</p><time class="date" id="date"></time></div>
+      <div class="hero-content">
+        <div><h1 id="message"></h1><p class="greeting" id="greeting"></p><a class="save" id="save" download>오늘의 한 장 간직하기 ↗</a></div>
+        <div class="image-wrap"><img id="picture" alt="" width="1254" height="1254"></div>
+      </div>
+    </section>
+    <section class="empty hidden" id="empty">새로운 하루의 응원을 준비하고 있어요.</section>
+    <section class="archive" aria-labelledby="gallery-title">
+      <div class="archive-top"><div><p class="eyebrow">THE LITTLE GALLERY</p><h2 id="gallery-title">하루하루, 모인 응원</h2><p class="archive-intro">작은 한 장을 눌러, 그날의 응원을 다시 만나 보세요.</p></div><span class="total" id="count"></span></div>
+      <div id="months"></div>
+      <p class="archive-empty hidden" id="archive-empty">응원이 도착할 때마다 이곳에 한 장씩 모여요.</p>
+    </section>
+  </main>
+  <footer>하루가 쌓이고, 작은 응원이 남아요.<br>하루 한 장, 나에게</footer>
+  <dialog id="detail" aria-labelledby="detail-message">
+    <div class="dialog-top"><time class="date" id="detail-date"></time><button class="close" id="close" type="button">닫기 ×</button></div>
+    <img id="detail-picture" alt=""><h2 id="detail-message"></h2><a class="save" id="detail-save" download>이 한 장 간직하기 ↗</a>
+  </dialog>
+  <script>
+    const CARDS = [
   {
     "date": "2026-11-02",
-    "image": "cards/2026-11-02.jpg",
-    "message": "작은 한 걸음도, 오늘의 너를 앞으로 데려가."
+    "message": "작은 한 걸음도, 오늘의 너를 앞으로 데려가.",
+    "image": "cards/2026-11-02.jpg"
   }
 ];
-const $=id=>document.getElementById(id);
-function koreanToday(now=new Date()){return new Date(now.getTime()+9*3600000).toISOString().slice(0,10)}
-function pickToday(cards,now=new Date()){const date=koreanToday(now);return cards.find(c=>c.date===date)||cards.find(c=>c.date<date)||null}
-let viewing=null;
-function show(card){if(!card)return;viewing=card.date;const isToday=card.date===koreanToday();$('label').textContent=isToday?'오늘, 나에게 건네는 한 줄':'다시 펼쳐 보는 작은 응원';$('date').textContent=card.date.replaceAll('-','. ');$('date').dateTime=card.date;$('message').textContent=card.message;$('picture').src=card.image;$('picture').alt=card.message+' — 밝고 잔잔한 그림책 삽화';$('save').href=card.image;$('save').download='하루-한-장-'+card.date+'.jpg';$('greeting').textContent=isToday?'서두르지 않고, 오늘도 나의 속도로. 잠깐 쉬어 가며 이 한 장을 만나 보세요.':CARDS.some(c=>c.date===koreanToday())?'그날의 마음을, 오늘 다시 천천히 만나 보세요.':'오늘의 카드는 아직 도착하지 않았어요. 최근에 도착한 한 장을 먼저 펼쳐 둘게요.';for(const b of $('cards').children)b.setAttribute('aria-pressed',String(b.dataset.date===card.date))}
-CARDS.sort((a,b)=>b.date.localeCompare(a.date));
-if(!CARDS.length){$('hero').classList.add('hidden');$('archive').classList.add('hidden');$('empty').classList.remove('hidden')}else{for(const card of CARDS){const button=document.createElement('button');button.className='past';button.dataset.date=card.date;button.setAttribute('aria-pressed','false');const img=document.createElement('img');img.src=card.image;img.alt='';img.loading='lazy';const time=document.createElement('time');time.textContent=card.date;time.dateTime=card.date;const p=document.createElement('p');p.textContent=card.message;button.append(img,time,p);button.onclick=()=>{show(card);$('hero').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})};$('cards').append(button)}$('count').textContent=CARDS.length+'장의 응원';show(pickToday(CARDS));}
-let knownDay=koreanToday();setInterval(()=>{if(knownDay!==koreanToday()){knownDay=koreanToday();show(pickToday(CARDS))}},60000);
-</script></body></html>
+    const $ = id => document.getElementById(id);
+    function koreanToday(now = new Date()) {
+      return new Date(now.getTime() + 9 * 3600000).toISOString().slice(0, 10);
+    }
+    function pickToday(cards, now = new Date()) {
+      const today = koreanToday(now);
+      return cards.find(card => card.date === today) || cards.find(card => card.date < today) || null;
+    }
+    function fillCard(card, prefix) {
+      $(prefix + 'date').textContent = card.date.replaceAll('-', '. ');
+      $(prefix + 'date').dateTime = card.date;
+      $(prefix + 'message').textContent = card.message;
+      $(prefix + 'picture').src = card.image;
+      $(prefix + 'picture').alt = card.message;
+      $(prefix + 'save').href = card.image;
+      $(prefix + 'save').download = '하루-한-장-' + card.date + '.jpg';
+    }
+    function openCard(card) {
+      fillCard(card, 'detail-');
+      $('detail').showModal();
+    }
+    function render() {
+      const today = koreanToday();
+      const available = CARDS.filter(card => card.date <= today);
+      const featured = pickToday(available);
+      $('hero').classList.toggle('hidden', !featured);
+      $('empty').classList.toggle('hidden', !!featured);
+      if (featured) {
+        fillCard(featured, '');
+        const isToday = featured.date === today;
+        $('label').textContent = isToday ? '오늘의 응원 한 장' : '가장 최근에 도착한 응원';
+        $('greeting').textContent = isToday ? '오늘은 이 한마디를 곁에 두어요.' : '오늘의 카드를 기다리며, 최근에 도착한 응원을 펼쳐 두어요.';
+        $('save').textContent = isToday ? '오늘의 한 장 간직하기 ↗' : '이 한 장 간직하기 ↗';
+      }
+      $('count').textContent = '지금까지 ' + available.length + '장';
+      const pastCards = available.filter(card => card.date < today);
+      $('months').replaceChildren();
+      $('archive-empty').classList.toggle('hidden', pastCards.length > 0);
+      let monthKey = '';
+      let grid;
+      for (const card of pastCards) {
+        const key = card.date.slice(0, 7);
+        if (key !== monthKey) {
+          monthKey = key;
+          const section = document.createElement('section');
+          section.className = 'month';
+          const title = document.createElement('h3');
+          title.textContent = key.slice(0, 4) + '년 ' + Number(key.slice(5)) + '월';
+          grid = document.createElement('div');
+          grid.className = 'cards';
+          section.append(title, grid);
+          $('months').append(section);
+        }
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'past';
+        button.setAttribute('aria-haspopup', 'dialog');
+        button.setAttribute('aria-label', card.date + ' 응원 보기. ' + card.message);
+        const img = document.createElement('img');
+        img.src = card.image;
+        img.alt = '';
+        img.loading = 'lazy';
+        const time = document.createElement('time');
+        time.textContent = card.date.replaceAll('-', '. ');
+        time.dateTime = card.date;
+        const message = document.createElement('p');
+        message.textContent = card.message;
+        button.append(img, time, message);
+        button.addEventListener('click', () => openCard(card));
+        grid.append(button);
+      }
+    }
+    CARDS.sort((a, b) => b.date.localeCompare(a.date));
+    $('close').addEventListener('click', () => $('detail').close());
+    $('detail').addEventListener('click', event => {
+      if (event.target !== $('detail')) return;
+      const bounds = $('detail').getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) $('detail').close();
+    });
+    render();
+    let knownDay = koreanToday();
+    setInterval(() => {
+      if (knownDay === koreanToday()) return;
+      knownDay = koreanToday();
+      render();
+    }, 60000);
+  </script>
+</body>
+</html>
